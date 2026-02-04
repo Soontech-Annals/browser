@@ -35,7 +35,7 @@ const siteUrl = `${siteOrigin.replace(/\/+$/, "")}${basePath || ""}`;
 export const siteConfig: SiteConfig = {
   siteName: "Wither Archive",
   siteDescription: "An archive of Wither technologies in Minecraft.",
-  logoSrc: "/logo.png",
+  logoSrc: `${basePath}/logo.png`,
   basePath,
   assetPrefix,
   siteOrigin,
