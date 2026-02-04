@@ -16,7 +16,8 @@ type Params = {
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const page = Number.parseInt((await params).page, 10);
 
-  const description = "Explore the archives for storage designs, guides, and resources submitted by the community.";
+  const description = "Explore the archives for wither tech designs submitted by the community.";
+
   return {
     title: `Archives Page ${page} · ${siteConfig.siteName}`,
     description,
@@ -28,17 +29,10 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
       title: `Archives Page ${page} · ${siteConfig.siteName}`,
       description,
       url: `/archives/page/${page}`,
-      images: [
-        {
-          url: `/archive.webp`
-        },
-      ]
     },
     twitter: {
-      card: "summary_large_image",
       title: `Archives Page ${page} · ${siteConfig.siteName}`,
-      description,
-      images: ["/archive.webp"],
+      description
     },
   };
 }

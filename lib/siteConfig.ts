@@ -26,26 +26,26 @@ const normalizeBasePath = (value: string) => {
 };
 
 // Deployment configuration lives here rather than env variables.
-const siteOrigin = "https://storagetech2.org";
+const siteOrigin = "https://DuskScorpio.github.io";
 // Set to "/viewer" (or "" for root) depending on where the site is hosted.
-const basePath = normalizeBasePath("");
+const basePath = normalizeBasePath("wither");
 const assetPrefix = basePath || undefined;
 const siteUrl = `${siteOrigin.replace(/\/+$/, "")}${basePath || ""}`;
 
 export const siteConfig: SiteConfig = {
-  siteName: "Storage Tech 2",
-  siteDescription: "A community-run platform to make Minecraft storage technologies accessible to everyone. Resources, community spaces, and tools to help you learn and develop storage technologies in Minecraft. Check out our archive of tech and join us today!",
+  siteName: "Wither Archive",
+  siteDescription: "An archive of Wither technologies in Minecraft.",
   logoSrc: "/logo.png",
   basePath,
   assetPrefix,
   siteOrigin,
   siteUrl,
   archiveRepo: {
-    owner: "Storage-Tech-2",
-    repo: "Archive",
+    owner: "DuskScorpio",
+    repo: "wither-archive",
     branch: "main",
   },
   lfsExtensions: ["mp4", "bin", "zip"],
-  repositoryUrl: "https://github.com/Storage-Tech-2/Archive",
-  discordInviteUrl: "https://discord.gg/storage-tech-2-1375556143186837695",
+  repositoryUrl: "https://github.com/DuskScorpio/wither-archive",
+  discordInviteUrl: "https://discord.gg/wd594eEtfm",
 };

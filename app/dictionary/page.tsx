@@ -8,18 +8,18 @@ export const dynamic = "force-static";
 
 export const metadata: Metadata = {
   title: `Dictionary · ${siteConfig.siteName}`,
-  description: "A comprehensive dictionary of storage tech terms and concepts.",
+  description: "A comprehensive dictionary of wither tech terms and concepts.",
   metadataBase: new URL(siteConfig.siteUrl),
   openGraph: {
     title: `Dictionary · ${siteConfig.siteName}`,
-    description: "A comprehensive dictionary of storage tech terms and concepts.",
+    description: "A comprehensive dictionary of wither tech terms and concepts.",
     url: `/dictionary`,
     images: []
   },
   twitter: {
     card: "summary",
     title: `Dictionary · ${siteConfig.siteName}`,
-    description: "A comprehensive dictionary of storage tech terms and concepts.",
+    description: "A comprehensive dictionary of wither tech terms and concepts.",
     images: []
   },
 };

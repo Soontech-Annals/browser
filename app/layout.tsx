@@ -24,18 +24,11 @@ export const metadata: Metadata = {
     title: siteConfig.siteName,
     description: siteConfig.siteDescription,
     url: "/",
-    images: [
-      {
-        url: "/social.png",
-        alt: siteConfig.siteName,
-      },
-    ],
   },
   twitter: {
     card: "summary",
     title: siteConfig.siteName,
     description: siteConfig.siteDescription,
-    images: ["/social.png"],
   },
 };
 
