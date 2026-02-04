@@ -16,7 +16,7 @@ type Params = {
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const page = Number.parseInt((await params).page, 10);
 
-  const description = "Explore the archives for wither tech designs submitted by the community.";
+  const description = "Explore the archives for encoded storage tech designs submitted by the community.";
 
   return {
     title: `Archives Page ${page} · ${siteConfig.siteName}`,
