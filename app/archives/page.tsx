@@ -8,7 +8,7 @@ import { Metadata } from "next";
 
 export const dynamic = "force-static";
 
-const description = "Explore the archives for encoded storage designs submitted by the community.";
+const description = siteConfig.pageDescriptions.archives;
 
 export const metadata: Metadata = {
   title: `Archives · ${siteConfig.siteName}`,

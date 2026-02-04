@@ -2,6 +2,11 @@ export type SiteConfig = {
   lfsExtensions: string[];
   siteName: string;
   siteDescription: string;
+  pageDescriptions: {
+    archives: string;
+    dictionary: string;
+    dictionaryExampleEntry: string;
+  };
   logoSrc: string;
   basePath: string;
   assetPrefix?: string;
@@ -26,26 +31,31 @@ const normalizeBasePath = (value: string) => {
 };
 
 // Deployment configuration lives here rather than env variables.
-const siteOrigin = "https://DuskScorpio.github.io";
+const siteOrigin = "https://soontech.org";
 // Set to "/viewer" (or "" for root) depending on where the site is hosted.
-const basePath = normalizeBasePath("wither");
+const basePath = normalizeBasePath("browser");
 const assetPrefix = basePath || undefined;
 const siteUrl = `${siteOrigin.replace(/\/+$/, "")}${basePath || ""}`;
 
 export const siteConfig: SiteConfig = {
-  siteName: "Wither Archive",
-  siteDescription: "An archive of Wither technologies in Minecraft.",
+  siteName: "Soontech Archive",
+  siteDescription: "An archive of encoded storage technologies in Minecraft.",
+  pageDescriptions: {
+    archives: "Explore the archives for encoded storage designs submitted by the Soontech community.",
+    dictionary: "A comprehensive dictionary of encoded tech terms and concepts.",
+    dictionaryExampleEntry: "This is an example dictionary entry used for demonstration purposes.",
+  },
   logoSrc: `${basePath}/logo.png`,
   basePath,
   assetPrefix,
   siteOrigin,
   siteUrl,
   archiveRepo: {
-    owner: "DuskScorpio",
-    repo: "wither-archive",
+    owner: "Soontech-Annals",
+    repo: "SoonNowArchive",
     branch: "main",
   },
   lfsExtensions: ["mp4", "bin", "zip"],
-  repositoryUrl: "https://github.com/DuskScorpio/wither-archive",
-  discordInviteUrl: "https://discord.gg/wd594eEtfm",
+  repositoryUrl: "https://github.com/Soontech-Annals/SoonNowArchive",
+  discordInviteUrl: "https://discord.gg/dkSM2PyzJe",
 };

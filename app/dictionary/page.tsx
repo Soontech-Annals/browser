@@ -5,21 +5,22 @@ import { Metadata } from "next";
 
 export const dynamic = "force-static";
 
+const description = siteConfig.pageDescriptions.dictionary;
 
 export const metadata: Metadata = {
   title: `Dictionary · ${siteConfig.siteName}`,
-  description: "A comprehensive dictionary of encoded tech terms and concepts.",
+  description,
   metadataBase: new URL(siteConfig.siteUrl),
   openGraph: {
     title: `Dictionary · ${siteConfig.siteName}`,
-    description: "A comprehensive dictionary of encoded tech terms and concepts.",
+    description,
     url: `/dictionary`,
     images: []
   },
   twitter: {
     card: "summary",
     title: `Dictionary · ${siteConfig.siteName}`,
-    description: "A comprehensive dictionary of encoded tech terms and concepts.",
+    description,
     images: []
   },
 };

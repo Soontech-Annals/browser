@@ -26,24 +26,25 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const slug = decodeURIComponent((await params).slug);
+  const exampleDescription = siteConfig.pageDescriptions.dictionaryExampleEntry;
 
   if (slug === "example-entry") {
     return {
       title: `Example Entry · ${siteConfig.siteName} Dictionary`,
-      description: "This is an example dictionary entry used for demonstration purposes.",
+      description: exampleDescription,
       alternates: {
         canonical: `/dictionary/${slug}`,
       },
       openGraph: {
         type: "article",
         title: `Example Entry · ${siteConfig.siteName} Dictionary`,
-        description: "This is an example dictionary entry used for demonstration purposes.",
+        description: exampleDescription,
         url: `/dictionary/${slug}`,
       },
       twitter: {
         card: "summary",
         title: `Example Entry · ${siteConfig.siteName} Dictionary`,
-        description: "This is an example dictionary entry used for demonstration purposes.",
+        description: exampleDescription,
       },
     };
   } 
