@@ -61,7 +61,6 @@ interface EmbeddingsEntry {
 
 const embeddingsCache = new Map<string, EmbeddingsEntry[]>();
 
-self.embeddingsCache = embeddingsCache;
 function base64ToInt8Array(base64: string): Int8Array {
     const binaryString = Buffer.from(base64, 'base64');
     return new Int8Array(binaryString);
