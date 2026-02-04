@@ -5,6 +5,7 @@ import { clsx } from "@/lib/utils/classNames";
 import { DEFAULT_BRANCH, DEFAULT_OWNER, DEFAULT_REPO, type SortKey } from "@/lib/types";
 import { prefetchDictionaryIndex, prefetchIndexAndLatestPosts } from "@/lib/archive";
 import { ForesightPrefetchLink } from "../ui/ForesightPrefetchLink";
+import { siteConfig } from "@/lib/siteConfig";
 
 type HeaderSearchFilters = {
   q: string;
@@ -111,8 +112,8 @@ export function HeaderBar(props: Props) {
           </div>
 
           <div className="flex shrink-0 items-center gap-2">
-            <ForesightPrefetchLink
-              href="/"
+            <a
+              href={siteConfig.siteOrigin}
               className={clsx(
                 "rounded-xl border px-3 py-2 text-sm transition",
                 view === "home"
@@ -121,7 +122,7 @@ export function HeaderBar(props: Props) {
               )}
             >
               Home
-            </ForesightPrefetchLink>
+            </a>
             <ForesightPrefetchLink
               href="/archives"
               className={clsx(
