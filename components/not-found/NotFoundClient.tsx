@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Footer } from "@/components/layout/Footer";
 import { getArchiveSlugInfo, getDictionarySlugInfo } from "@/lib/utils/urls";
+import { siteConfig } from "@/lib/siteConfig";
 
 type NotFoundKind = "archive" | "dictionary";
 
@@ -37,7 +38,7 @@ const NotFoundResolver = dynamic(() => import("./NotFoundResolver"), {
 });
 
 function PendingLookup({ kind, slug }: { kind?: NotFoundKind | null; slug?: string | null }) {
-  const fallbackHref = kind === "dictionary" ? "/dictionary" : kind === "archive" ? "/archives" : "/";
+  const fallbackHref = kind === "dictionary" ? "/dictionary" : kind === "archive" ? "/archives" : siteConfig.siteOrigin;
 
   const kindLabel = kind === "dictionary" ? "dictionary" : kind === "archive" ? "archive" : "page";
   const slugLabel = slug?.trim() || "…";
