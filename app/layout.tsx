@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { siteConfig } from "@/lib/siteConfig";
-import { GoogleAnalytics } from "@next/third-parties/google";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 import { AutoReloadOnChunkError } from "@/components/AutoReloadOnChunkError";
 
@@ -46,7 +45,6 @@ export default function RootLayout({
           type="image/<generated>"
           sizes="<generated>"
         />
-        <GoogleAnalytics gaId="G-77Y9ZBT4TY" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-50 text-slate-900 dark:bg-black dark:text-white`}>
         <AutoReloadOnChunkError />
