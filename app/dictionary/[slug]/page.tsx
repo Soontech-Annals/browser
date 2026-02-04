@@ -17,11 +17,37 @@ export async function generateStaticParams() {
     { slug: "example-entry" },
   ];
   const dictionary = await fetchDictionaryIndex();
+  if (dictionary.entries.length === 0) return [
+    { slug: "example-entry" },
+  ];
+
   return dictionary.entries.map((entry) => ({ slug: buildDictionarySlug(entry.index) }));
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const slug = decodeURIComponent((await params).slug);
+
+  if (slug === "example-entry") {
+    return {
+      title: `Example Entry · ${siteConfig.siteName} Dictionary`,
+      description: "This is an example dictionary entry used for demonstration purposes.",
+      alternates: {
+        canonical: `/dictionary/${slug}`,
+      },
+      openGraph: {
+        type: "article",
+        title: `Example Entry · ${siteConfig.siteName} Dictionary`,
+        description: "This is an example dictionary entry used for demonstration purposes.",
+        url: `/dictionary/${slug}`,
+      },
+      twitter: {
+        card: "summary",
+        title: `Example Entry · ${siteConfig.siteName} Dictionary`,
+        description: "This is an example dictionary entry used for demonstration purposes.",
+      },
+    };
+  } 
+  
   const dictionary = await fetchDictionaryIndex();
   const match = findDictionaryEntryBySlug(dictionary.config.entries, slug);
   if (!match) {
