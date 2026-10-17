@@ -83,6 +83,13 @@ export type Attachment = BaseAttachment & {
         error?: string,
     },
 
+    // For schematics
+    schematic?: {
+        version?: string,
+        size?: string,
+        error?: string,
+    },
+
     // For wdl files
     wdl?: {
         version?: string, // Minecraft version
@@ -183,6 +190,7 @@ export type ArchiveEntryData = {
   name: string;
   code: string;
   authors: Author[];
+  acknowledgements?: Author[];
   endorsers: Author[];
   tags: Tag[];
   images: Image[];

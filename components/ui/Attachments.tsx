@@ -4,41 +4,69 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { getYouTubeEmbedURL } from "@/lib/utils/media";
 import type { Attachment, Image as ArchiveImage } from "@/lib/types";
+import type { ArchiveListItem } from "@/lib/archive";
+import { SCHEMATIC_VIEWER_KINDS, type AttachmentContext, type EmbedConfig } from "@/lib/embed/protocol";
+import { attachmentURL } from "@/lib/github";
+import { embedAttachment, embedPost } from "@/lib/embed/attachments";
+import { useEmbed } from "../embed/EmbedProvider";
+import { AttachmentAction } from "../embed/AttachmentAction";
 
 type PdfPreviewRequest = { src: string; title?: string; description?: string };
+type CsvPreviewRequest = { src: string; title?: string; description?: string };
 
 export function AttachmentCard({
   att,
+  post,
+  context = { location: "post" },
   onView,
   onViewPdf,
+  onViewCsv,
 }: {
   att: Attachment;
+  post: ArchiveListItem;
+  context?: AttachmentContext;
   onView?(img: ArchiveImage): void;
   onViewPdf?(pdf: PdfPreviewRequest): void;
+  onViewCsv?(csv: CsvPreviewRequest): void;
 }) {
-  const href = att.path && att.canDownload ? att.path : att.url;
-  const sourceURL = att.path || att.url;
-  const schematicURL = att.litematic && sourceURL ? `https://llamamc.org/renderer?url=${sourceURL}` : null;
-  const videoFilePattern = /\.(mp4|webm|m3u8|mpd)$/i;
-  const isVideo = !att.youtube && (att.contentType?.startsWith("video/") || videoFilePattern.test(att.name));
-  const kind = att.youtube
+  const { connected, config } = useEmbed();
+  const file = embedAttachment(att, post);
+  const postInfo = embedPost(post);
+  const resolvedURL = attachmentURL(post.channel.path, post.entry.path, att);
+  const href = att.canDownload ? resolvedURL : att.url;
+  const sourceURL = resolvedURL;
+  const isSchematic = SCHEMATIC_VIEWER_KINDS.includes(file.kind);
+  const schematicURL = isSchematic && sourceURL ? `https://llamamc.org/renderer?url=${encodeURIComponent(sourceURL)}` : null;
+  const customActions = connected ? config.actions.filter((action) => action.kinds.includes(file.kind)) : [];
+  const downloadMode = connected ? config.download[file.kind] : "keep";
+  const viewerMode = connected ? config.viewSchematic.mode : "builtin";
+  const useParentViewer = isSchematic && viewerMode === "parent";
+  const useBuiltinViewer = isSchematic && viewerMode === "builtin";
+  const isVideo = file.kind === "video";
+  const kind = file.kind === "youtube"
     ? "YouTube"
-    : att.litematic
+    : file.kind === "litematic"
       ? "Litematic"
-      : att.wdl
-        ? "WDL"
-        : isVideo
-          ? "Video"
-          : att.contentType?.toUpperCase() || "FILE";
+      : file.kind === "schematic"
+        ? "Schematic"
+        : file.kind === "wdl"
+          ? "WDL"
+          : isVideo
+            ? "Video"
+            : att.contentType?.toUpperCase() || "FILE";
   const ext = (att.name?.split(".")?.pop() || "").toUpperCase();
   const title = att.youtube?.title || att.name;
   const embedSrc = att.youtube ? getYouTubeEmbedURL(att.url) : null;
   const videoEmbedSrc = isVideo && sourceURL ? `https://faststream.online/player/#${sourceURL}` : null;
-  const isImage = !isVideo && (att.contentType?.startsWith("image/") || /\.(png|jpe?g|gif|webp|bmp|svg)$/i.test(att.name || ""));
-  const isPdf = !att.youtube && (att.contentType?.toLowerCase().includes("pdf") || /\.pdf$/i.test(att.name || ""));
+  const isImage = file.kind === "image";
+  const isPdf = file.kind === "pdf";
   const pdfSource = isPdf ? sourceURL : null;
-  const imageForView: ArchiveImage = att;
-  const [showSchematic, setShowSchematic] = useState(false);
+  const isCsv = file.kind === "csv";
+  const csvSource = isCsv ? sourceURL : null;
+  const imageForView: ArchiveImage = { ...att, path: sourceURL };
+  const [schematicConfig, setSchematicConfig] = useState<EmbedConfig | null>(null);
+
+  const schemInfo = att.schematic || att.litematic;
   return (
     <>
       <article className="flex h-full flex-col overflow-hidden rounded-xl border bg-white dark:border-gray-800 dark:bg-gray-900">
@@ -78,19 +106,19 @@ export function AttachmentCard({
           {!att.youtube && <div className="text-[11px] text-gray-500 wrap-break-word">{att.name}</div>}
           {att.description && <div className="text-xs text-gray-700 dark:text-gray-300 wrap-break-word">{att.description}</div>}
 
-          {att.litematic ? (
+          {schemInfo ? (
             <ul className="mt-1 text-xs text-gray-600 dark:text-gray-300">
-              {att.litematic.version && (
+              {schemInfo.version && (
                 <li>
-                  <span className="font-medium">Version:</span> {att.litematic.version}
+                  <span className="font-medium">Version:</span> {schemInfo.version}
                 </li>
               )}
-              {att.litematic.size && (
+              {schemInfo.size && (
                 <li>
-                  <span className="font-medium">Size:</span> {att.litematic.size}
+                  <span className="font-medium">Size:</span> {schemInfo.size}
                 </li>
               )}
-              {att.litematic.error && <li className="text-red-600">{att.litematic.error}</li>}
+              {schemInfo.error && <li className="text-red-600">{schemInfo.error}</li>}
             </ul>
           ) : null}
           {att.wdl ? (
@@ -124,14 +152,16 @@ export function AttachmentCard({
           ) : null}
 
           <div className="mt-auto flex flex-wrap items-center gap-2 pt-2">
-            {att.litematic ? (
+            {useParentViewer ? (
+              <AttachmentAction key={`view-${JSON.stringify(config)}`} id="view-schematic" label={config.viewSchematic.label} post={postInfo} attachment={file} context={context} />
+            ) : useBuiltinViewer ? (
               <button
                 type="button"
-                onClick={() => schematicURL && setShowSchematic(true)}
+                onClick={() => schematicURL && setSchematicConfig(config)}
                 disabled={!schematicURL}
                 className="rounded-lg border px-3 py-1 text-sm hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-gray-800"
               >
-                View Schematic
+                {connected ? config.viewSchematic.label : "View Schematic"}
               </button>
             ) : null}
             {isPdf && pdfSource && onViewPdf ? (
@@ -143,7 +173,19 @@ export function AttachmentCard({
                 View PDF
               </button>
             ) : null}
-            {att.canDownload ? (
+            {isCsv && csvSource && onViewCsv ? (
+              <button
+                type="button"
+                onClick={() => onViewCsv({ src: csvSource, title, description: att.description })}
+                className="rounded-lg border px-3 py-1 text-sm hover:bg-gray-50 dark:hover:bg-gray-800"
+              >
+                View Spreadsheet
+              </button>
+            ) : null}
+            {customActions.map((action) => (
+              <AttachmentAction key={`${action.id}-${JSON.stringify(config)}`} id={action.id} label={action.label} post={postInfo} attachment={file} context={context} />
+            ))}
+            {downloadMode !== "keep" ? null : att.canDownload ? (
               <a href={href} download className="rounded-lg border px-3 py-1 text-sm hover:bg-gray-50 dark:hover:bg-gray-800">
                 Download
               </a>
@@ -155,14 +197,14 @@ export function AttachmentCard({
           </div>
         </div>
       </article>
-      {showSchematic && schematicURL ? (
-        <div className="fixed inset-0 z-50 bg-black/80" onClick={() => setShowSchematic(false)}>
+      {schematicConfig === config && schematicURL && useBuiltinViewer ? (
+        <div className="fixed inset-0 z-50 bg-black/80" onClick={() => setSchematicConfig(null)}>
           <div className="relative h-full w-full" onClick={(e) => e.stopPropagation()}>
             <iframe src={schematicURL} title={title ? `${title} schematic` : "Schematic viewer"} className="h-full w-full border-0 bg-white" allowFullScreen />
             <button
               type="button"
               className="absolute right-4 top-4 rounded-full border bg-white/80 px-3 py-1 text-sm font-semibold shadow-sm hover:bg-white dark:border-gray-700 dark:bg-gray-900/80"
-              onClick={() => setShowSchematic(false)}
+              onClick={() => setSchematicConfig(null)}
             >
               Close
             </button>
